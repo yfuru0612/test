@@ -1,60 +1,60 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>体調ログtest</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    label, select, input {
-      display: block;
-      margin: 10px 0;
-      font-size: 1.2em;
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
+  <title>夜活をぱくり</title>
 </head>
 <body>
-  <h1>体調ログ</h1>
+  <h2>ログ入力</h2>
   <form id="logForm">
-    <label>日付:
-      <input type="date" name="date" required>
-    </label>
-
-    <label>時間:
-      <input type="time" name="time" required>
-    </label>
-
-    <label>ログタイプ:
-      <select name="logType" id="logType" required>
-        <option value="">--選択--</option>
-        <option value="taicho">体調</option>
-        <option value="shokuji">食事</option>
-      </select>
-    </label>
-
-    <!-- ▼体調フォームエリア（次ステップで追加） -->
-    <div id="taichoForm" class="hidden"></div>
-
-    <!-- ▼食事フォームエリア（次ステップで追加） -->
-    <div id="shokujiForm" class="hidden"></div>
+    <label>カラム１: <input type="text" name="culum1" required></label><br>
+    <label>カラム２: <input type="text" name="culum2" required></label><br>
+    <label>カラム３: <input type="text" name="culum3"></label><br>
+    <label>カラム４: <input type="text" name="culum4"></label><br>
 
     <button type="submit">送信</button>
   </form>
 
+  
   <script>
-    // ログタイプに応じたフォーム切り替え
-    document.getElementById('logType').addEventListener('change', function () {
-      const type = this.value;
-      document.getElementById('taichoForm').classList.add('hidden');
-      document.getElementById('shokujiForm').classList.add('hidden');
-      if (type === 'taicho') {
-        document.getElementById('taichoForm').classList.remove('hidden');
-      } else if (type === 'shokuji') {
-        document.getElementById('shokujiForm').classList.remove('hidden');
-      }
-    });
+    document.getElementById("logForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+
+  fetch("https://script.google.com/macros/s/AKfycbw1oZK4NGWBsPVG-Kn7d9rQe3ouOwsH--Bac7IQDtYcMQ2m7Y0bfaS84nJVu_T5QWBKUg/exec", {
+    method: "POST",
+    body: new URLSearchParams(formData) // ←ここがポイント
+  }).then(response => {
+    if (response.ok) {
+      alert("送信完了！");
+      e.target.reset();
+    } else {
+      alert("送信に失敗しました");
+    }
+  });
+});
+
+    // document.getElementById("logForm").addEventListener("submit", function(e) {
+    //   e.preventDefault();
+    //   const formData = new FormData(e.target);
+    //   const data = {};
+    //   formData.forEach((value, key) => data[key] = value);
+
+    //   fetch("https://script.google.com/macros/s/AKfycbyU2a7qRXMsz03ZoDGcMZF-z87euhSbcHglt1t0mj0BvEvkjK797VKL3jPr9u_r64EXAw/exec", {
+    //     method: "POST",
+    //     body: JSON.stringify(data),
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }).then(response => {
+    //     if (response.ok) {
+    //       alert("送信完了！");
+    //       e.target.reset();
+    //     } else {
+    //       alert("送信に失敗しました");
+    //     }
+    //   });
+    // });
   </script>
 </body>
 </html>
