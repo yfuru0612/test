@@ -1,26 +1,60 @@
 <!DOCTYPE html>
-<html>
-  <body>
-    <form id="form">
-      <input type="text" name="test" placeholder="テストデータ">
-      <button type="submit">送信</button>
-    </form>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>体調ログ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    label, select, input {
+      display: block;
+      margin: 10px 0;
+      font-size: 1.2em;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>体調ログ</h1>
+  <form id="logForm">
+    <label>日付:
+      <input type="date" name="date" required>
+    </label>
 
-    <script>
-      const url = "https://script.google.com/macros/s/AKfycbzCPLokWN7Xq3poeO0mmAExoOCOElLueoYBx7jUsOwU3M90jIwFQMAHwagCBKJ9Rwon/exec";
+    <label>時間:
+      <input type="time" name="time" required>
+    </label>
 
-      document.getElementById("form").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const form = new FormData(e.target);
-        const payload = { test: form.get("test") };
+    <label>ログタイプ:
+      <select name="logType" id="logType" required>
+        <option value="">--選択--</option>
+        <option value="taicho">体調</option>
+        <option value="shokuji">食事</option>
+      </select>
+    </label>
 
-        fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify(payload)
-        }).then(() => alert("送信しました！"))
-          .catch(() => alert("失敗しました"));
-      });
-    </script>
-  </body>
+    <!-- ▼体調フォームエリア（次ステップで追加） -->
+    <div id="taichoForm" class="hidden"></div>
+
+    <!-- ▼食事フォームエリア（次ステップで追加） -->
+    <div id="shokujiForm" class="hidden"></div>
+
+    <button type="submit">送信</button>
+  </form>
+
+  <script>
+    // ログタイプに応じたフォーム切り替え
+    document.getElementById('logType').addEventListener('change', function () {
+      const type = this.value;
+      document.getElementById('taichoForm').classList.add('hidden');
+      document.getElementById('shokujiForm').classList.add('hidden');
+      if (type === 'taicho') {
+        document.getElementById('taichoForm').classList.remove('hidden');
+      } else if (type === 'shokuji') {
+        document.getElementById('shokujiForm').classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
 </html>
