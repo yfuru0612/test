@@ -21,7 +21,7 @@
   e.preventDefault();
   const formData = new FormData(e.target);
 
-  fetch("https://script.google.com/macros/s/AKfycbw1oZK4NGWBsPVG-Kn7d9rQe3ouOwsH--Bac7IQDtYcMQ2m7Y0bfaS84nJVu_T5QWBKUg/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbwNUBOw0H-BcF1bvAgU7Jv9XMl7Eew-ljYMDcIn3rkbhM-oJFHUfG3hw2OnvJSDjEpj/exec", {
     method: "POST",
     body: new URLSearchParams(formData) // ←ここがポイント
   }).then(response => {
