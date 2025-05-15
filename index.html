@@ -7,9 +7,9 @@
 <body>
   <h2>Log</h2>
   <form id="logForm">
-    <label>日付: <input type="text" name="date" required></label><br>
-    <label>時間: <input type="text" name="time" required></label><br>
-    <label>状態: <input type="text" name="status"></label><br>
+    <label>日付: <input type="date" name="date" required></label><br>
+    <label>時間: <input type="time" name="time" required></label><br>
+    <label>Condition: <input type="text" name="Condition"></label><br>
     <label>値: <input type="text" name="value"></label><br>
 
     <button type="submit">送信</button>
@@ -21,7 +21,7 @@
   e.preventDefault();
   const formData = new FormData(e.target);
 
-  fetch("https://script.google.com/macros/s/AKfycbzqp03WkDX5hvOAxfEiPZJYkQLIUYv-SfwnKqjJGb02gUeVJo84yHmetE3a0FJd5M4B/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbyL5aODxVXGwUQoJ8AoQIkFn1H_ZjiQ4IwwTAig3HSDDX4vS_Mg9yRZoEL7EouSQjhb/exec", {
     method: "POST",
     body: new URLSearchParams(formData) // ←ここがポイント
   }).then(response => {
