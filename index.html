@@ -7,10 +7,10 @@
 <body>
   <h2>ログ入力</h2>
   <form id="logForm">
-    <label>カラム１: <input type="text" name="culum1" required></label><br>
-    <label>カラム２: <input type="text" name="culum2" required></label><br>
-    <label>カラム３: <input type="text" name="culum3"></label><br>
-    <label>カラム４: <input type="text" name="culum4"></label><br>
+    <label>カラム１: <input type="text" name="date" required></label><br>
+    <label>カラム２: <input type="text" name="time" required></label><br>
+    <label>カラム３: <input type="text" name="status"></label><br>
+    <label>カラム４: <input type="text" name="value"></label><br>
 
     <button type="submit">送信</button>
   </form>
@@ -21,7 +21,7 @@
   e.preventDefault();
   const formData = new FormData(e.target);
 
-  fetch("https://script.google.com/macros/s/AKfycbw-vrVV0XY6qO2K-jffNtrDvA-zEtrZHYLGnqfzmZvtZVK4fwsOM0aeGL5HejLw8xjf/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbzqp03WkDX5hvOAxfEiPZJYkQLIUYv-SfwnKqjJGb02gUeVJo84yHmetE3a0FJd5M4B/exec", {
     method: "POST",
     body: new URLSearchParams(formData) // ←ここがポイント
   }).then(response => {
