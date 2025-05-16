@@ -9,10 +9,16 @@
   <form id="logForm">
     <label>日付: <input type="date" name="date" id="dateInput" required></label><br>
     <label>時間: <input type="time" name="time" id="timeInput" required></label><br>
-    <label>項目: <input type="text" name="type"></label><br>
+    <label>項目: <select name="type" id="typeSelect"></select></label><br>
+    <label>カテゴリ1: <select name="cate1" id="cate1Select"></select></label><br>
+    <label>カテゴリ2: <select name="cate2" id="cate2Select"></select></label><br>
+    <label>カテゴリ3: <select name="cate3" id="cate3Select"></select></label><br>
+
+    <!-- <label>項目: <input type="text" name="type"></label><br>
     <label>カテゴリ1: <input type="text" name="cate1"></label><br>
     <label>カテゴリ2: <input type="text" name="cate2"></label><br>
-    <label>カテゴリ3: <input type="text" name="cate3"></label><br>
+    <label>カテゴリ3: <input type="text" name="cate3"></label><br> -->
+
     <label>コンディション: <input type="text" name="Condition"></label><br>
     <label>値: 
       <select name="value">
@@ -23,7 +29,7 @@
         <option value="1">+1</option>
         <option value="2">+2</option>
         <option value="3">+3</option>
-      </select>
+      </select> 
     </label><br>
 
 
@@ -32,6 +38,7 @@
   </form>
 
   <script>
+    // 日付・時間のデフォルト入力
     window.onload = function() {
       const now = new Date();
       const date = now.toISOString().slice(0, 10); // yyyy-mm-dd
@@ -40,6 +47,32 @@
       document.getElementById("dateInput").value = date;
       document.getElementById("timeInput").value = time;
     };
+
+    //定義ファイルを読み込む
+    const OPTIONS_URL = "https://yfuru0612.github.io/wellness-log/options.json";
+
+    fetch(OPTIONS_URL)
+      .then(response => response.json())
+      .then(data => {
+        populateSelect("typeSelect", data.type);
+        populateSelect("cate1Select", data.cate1);
+        populateSelect("cate2Select", data.cate2);
+        populateSelect("cate3Select", data.cate3);
+      })
+      .catch(error => {
+        console.error("選択肢の読み込みに失敗しました:", error);
+      });
+
+    function populateSelect(selectId, options) {
+      const select = document.getElementById(selectId);
+      options.forEach(value => {
+        const opt = document.createElement("option");
+        opt.value = value;
+        opt.textContent = value;
+        select.appendChild(opt);
+      });
+    }
+
 
     document.getElementById("logForm").addEventListener("submit", function(e) {
       e.preventDefault();
