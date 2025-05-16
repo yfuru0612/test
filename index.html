@@ -7,38 +7,61 @@
 <body>
   <h2>Log</h2>
   <form id="logForm">
-    <label>日付: <input type="date" name="date" required></label><br>
-    <label>時間: <input type="time" name="time" required></label><br>
+    <label>日付: <input type="date" name="date" id="dateInput" required></label><br>
+    <label>時間: <input type="time" name="time" id="timeInput" required></label><br>
     <label>項目: <input type="text" name="type"></label><br>
     <label>カテゴリ1: <input type="text" name="cate1"></label><br>
-    <label>カテゴリ1: <input type="text" name="cate2"></label><br>
-    <label>カテゴリ1: <input type="text" name="cate3"></label><br>
+    <label>カテゴリ2: <input type="text" name="cate2"></label><br>
+    <label>カテゴリ3: <input type="text" name="cate3"></label><br>
     <label>コンディション: <input type="text" name="Condition"></label><br>
-    <label>値: <input type="text" name="value"></label><br>
+    <label>値: 
+      <select name="value">
+        <option value="-3">-3</option>
+        <option value="-2">-2</option>
+        <option value="-1">-1</option>
+        <option value="0" selected>0</option>
+        <option value="1">+1</option>
+        <option value="2">+2</option>
+        <option value="3">+3</option>
+      </select>
+    </label><br>
+
+
 
     <button type="submit">送信</button>
   </form>
 
-  
-  <script>    
+  <script>
+    window.onload = function() {
+      const now = new Date();
+      const date = now.toISOString().slice(0, 10); // yyyy-mm-dd
+      const time = now.toTimeString().slice(0, 5); // hh:mm
+
+      document.getElementById("dateInput").value = date;
+      document.getElementById("timeInput").value = time;
+    };
+
     document.getElementById("logForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const formData = new FormData(e.target);
+      e.preventDefault();
+      const formData = new FormData(e.target);
 
-  fetch("https://script.google.com/macros/s/AKfycbwddQbwMSW1TeLl-2VSLXXhV84m0YhpP0mAmKusGiVgx4qTW3xMDVl-a84y4lW754ud/exec", {
-    method: "POST",
-    body: new URLSearchParams(formData) // ←ここがポイント
-  }).then(response => {
-    if (response.ok) {
-      alert("送信完了！");
-      e.target.reset();
-    } else {
-      alert("送信に失敗しました");
-    }
-  });
-});
+      fetch("https://script.google.com/macros/s/AKfycbwddQbwMSW1TeLl-2VSLXXhV84m0YhpP0mAmKusGiVgx4qTW3xMDVl-a84y4lW754ud/exec", {
+        method: "POST",
+        body: new URLSearchParams(formData)
+      }).then(response => {
+        if (response.ok) {
+          alert("送信完了！");
+          e.target.reset();
 
-
+          // 送信後も日付と時間を再設定
+          const now = new Date();
+          document.getElementById("dateInput").value = now.toISOString().slice(0, 10);
+          document.getElementById("timeInput").value = now.toTimeString().slice(0, 5);
+        } else {
+          alert("送信に失敗しました");
+        }
+      });
+    });
   </script>
 </body>
 </html>
