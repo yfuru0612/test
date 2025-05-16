@@ -9,7 +9,11 @@
   <form id="logForm">
     <label>日付: <input type="date" name="date" required></label><br>
     <label>時間: <input type="time" name="time" required></label><br>
-    <label>Condition: <input type="text" name="Condition"></label><br>
+    <label>項目: <input type="text" name="type"></label><br>
+    <label>カテゴリ1: <input type="text" name="cate1"></label><br>
+    <label>カテゴリ1: <input type="text" name="cate2"></label><br>
+    <label>カテゴリ1: <input type="text" name="cate3"></label><br>
+    <label>コンディション: <input type="text" name="Condition"></label><br>
     <label>値: <input type="text" name="value"></label><br>
 
     <button type="submit">送信</button>
@@ -21,7 +25,7 @@
   e.preventDefault();
   const formData = new FormData(e.target);
 
-  fetch("https://script.google.com/macros/s/AKfycbyL5aODxVXGwUQoJ8AoQIkFn1H_ZjiQ4IwwTAig3HSDDX4vS_Mg9yRZoEL7EouSQjhb/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbzBDHMsfyTxSbLEi3kr35PxhLUhOb70_Kr-IMMPfbDDgL4PhujbXQ3AzRJeGwLNYHi8/exec", {
     method: "POST",
     body: new URLSearchParams(formData) // ←ここがポイント
   }).then(response => {
