@@ -20,21 +20,7 @@
   </form>
 
   
-  <script>
-     // 現在日時を取得
-    const now = new Date();
-
-    // 日付フォーマット（YYYY-MM-DD）
-    const dateStr = now.toISOString().split('T')[0];
-
-    // 時間フォーマット（HH:MM）
-    const timeStr = now.toTimeString().split(':').slice(0,2).join(':');
-
-    // フォームに値を設定
-    document.getElementById('date').value = dateStr;
-    document.getElementById('time').value = timeStr;
-
-    
+  <script>    
     document.getElementById("logForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const formData = new FormData(e.target);
