@@ -21,6 +21,20 @@
 
   
   <script>
+     // 現在日時を取得
+    const now = new Date();
+
+    // 日付フォーマット（YYYY-MM-DD）
+    const dateStr = now.toISOString().split('T')[0];
+
+    // 時間フォーマット（HH:MM）
+    const timeStr = now.toTimeString().split(':').slice(0,2).join(':');
+
+    // フォームに値を設定
+    document.getElementById('date').value = dateStr;
+    document.getElementById('time').value = timeStr;
+
+    
     document.getElementById("logForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const formData = new FormData(e.target);
@@ -38,27 +52,7 @@
   });
 });
 
-    // document.getElementById("logForm").addEventListener("submit", function(e) {
-    //   e.preventDefault();
-    //   const formData = new FormData(e.target);
-    //   const data = {};
-    //   formData.forEach((value, key) => data[key] = value);
 
-    //   fetch("https://script.google.com/macros/s/AKfycbyU2a7qRXMsz03ZoDGcMZF-z87euhSbcHglt1t0mj0BvEvkjK797VKL3jPr9u_r64EXAw/exec", {
-    //     method: "POST",
-    //     body: JSON.stringify(data),
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   }).then(response => {
-    //     if (response.ok) {
-    //       alert("送信完了！");
-    //       e.target.reset();
-    //     } else {
-    //       alert("送信に失敗しました");
-    //     }
-    //   });
-    // });
   </script>
 </body>
 </html>
