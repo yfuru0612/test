@@ -50,21 +50,19 @@
 
     //定義ファイルを読み込む
     const OPTIONS_URL = "https://yfuru0612.github.io/wellness-log/options.json";
+    let optionsTree = {};
 
     fetch(OPTIONS_URL)
       .then(response => response.json())
       .then(data => {
-        populateSelect("typeSelect", data.type);
-        populateSelect("cate1Select", data.cate1);
-        populateSelect("cate2Select", data.cate2);
-        populateSelect("cate3Select", data.cate3);
+        optionsTree = data;
+        populateSelect("typeSelect", Object.keys(data));
       })
-      .catch(error => {
-        console.error("選択肢の読み込みに失敗しました:", error);
-      });
+      .catch(error => console.error("選択肢の読み込みに失敗しました:", error));
 
     function populateSelect(selectId, options) {
       const select = document.getElementById(selectId);
+      select.innerHTML = '<option value="">--選んでください--</option>';
       options.forEach(value => {
         const opt = document.createElement("option");
         opt.value = value;
@@ -72,6 +70,63 @@
         select.appendChild(opt);
       });
     }
+
+    // 依存関係に応じて選択肢を動的に更新
+    document.getElementById("typeSelect").addEventListener("change", function () {
+      const type = this.value;
+      const cate1Options = type && optionsTree[type] ? Object.keys(optionsTree[type]) : [];
+      populateSelect("cate1Select", cate1Options);
+      populateSelect("cate2Select", []);
+      populateSelect("cate3Select", []);
+    });
+
+    document.getElementById("cate1Select").addEventListener("change", function () {
+      const type = document.getElementById("typeSelect").value;
+      const cate1 = this.value;
+      const cate2Options =
+        type && cate1 && optionsTree[type] && optionsTree[type][cate1]
+          ? Object.keys(optionsTree[type][cate1])
+          : [];
+      populateSelect("cate2Select", cate2Options);
+      populateSelect("cate3Select", []);
+    });
+
+    document.getElementById("cate2Select").addEventListener("change", function () {
+      const type = document.getElementById("typeSelect").value;
+      const cate1 = document.getElementById("cate1Select").value;
+      const cate2 = this.value;
+      const cate3Options =
+        type && cate1 && cate2 &&
+        optionsTree[type] && optionsTree[type][cate1] &&
+        optionsTree[type][cate1][cate2]
+          ? optionsTree[type][cate1][cate2]
+          : [];
+      populateSelect("cate3Select", cate3Options);
+    }); 
+
+    //let optionsTree = {};
+
+    // fetch(OPTIONS_URL)
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     populateSelect("typeSelect", data.type);
+    //     populateSelect("cate1Select", data.cate1);
+    //     populateSelect("cate2Select", data.cate2);
+    //     populateSelect("cate3Select", data.cate3);
+    //   })
+    //   .catch(error => {
+    //     console.error("選択肢の読み込みに失敗しました:", error);
+    //   });
+
+    // function populateSelect(selectId, options) {
+    //   const select = document.getElementById(selectId);
+    //   options.forEach(value => {
+    //     const opt = document.createElement("option");
+    //     opt.value = value;
+    //     opt.textContent = value;
+    //     select.appendChild(opt);
+    //   });
+    // }
 
 
     document.getElementById("logForm").addEventListener("submit", function(e) {
