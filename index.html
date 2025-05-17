@@ -17,9 +17,11 @@
     <!-- <label>項目: <input type="text" name="type"></label><br>
     <label>カテゴリ1: <input type="text" name="cate1"></label><br>
     <label>カテゴリ2: <input type="text" name="cate2"></label><br>
-    <label>カテゴリ3: <input type="text" name="cate3"></label><br> -->
+    <label>カテゴリ3: <input type="text" name="cate3"></label><br>
+    <label>コンディション: <input type="text" name="Condition"></label><br> -->
 
-    <label>コンディション: <input type="text" name="Condition"></label><br>
+    <label>コンディション: <input type="text" name="condition" id="conditionInput"></label><br>
+
     <label>値: 
       <select name="value">
         <option value="-3">-3</option>
@@ -38,7 +40,7 @@
   </form>
 
   <script>
-    // 日付・時間のデフォルト入力
+    // 日付・時間：デフォルト入力
     window.onload = function() {
       const now = new Date();
       const date = now.toISOString().slice(0, 10); // yyyy-mm-dd
@@ -48,92 +50,85 @@
       document.getElementById("timeInput").value = time;
     };
 
-    //定義ファイルを読み込む
-    const OPTIONS_URL = "https://yfuru0612.github.io/wellness-log/options.json";
-    let optionsTree = {};
-
-    fetch(OPTIONS_URL)
-      .then(response => response.json())
-      .then(data => {
-        optionsTree = data;
-        populateSelect("typeSelect", Object.keys(data));
-      })
-      .catch(error => console.error("選択肢の読み込みに失敗しました:", error));
-
-    function populateSelect(selectId, options) {
-      const select = document.getElementById(selectId);
-      select.innerHTML = '<option value="">--選んでください--</option>';
-      options.forEach(value => {
-        const opt = document.createElement("option");
-        opt.value = value;
-        opt.textContent = value;
-        select.appendChild(opt);
+    // 項目とカテ1~3：   
+    // GitHub上のCSVファイルを読み込む
+    fetch("https://yfuru0612.github.io/wellness-log/master.csv")
+      .then(res => res.text())
+      .then(csv => {
+        const tree = csvToTree(csv);       // CSVを階層ツリーに変換
+        optionsTree = tree;                // グローバル変数として保持
+        populateSelect("typeSelect", Object.keys(tree));
       });
+
+
+      //CSV → 階層ツリー化する関数
+      function csvToTree(csvText) {
+      const lines = csvText.trim().split('\n');
+      const headers = lines[0].split(',').map(h => h.trim());
+      const tree = {};
+
+      for (let i = 1; i < lines.length; i++) {
+        const row = lines[i].split(',').map(cell => cell.trim());
+        let current = tree;
+        for (let j = 0; j < headers.length; j++) {
+          const key = row[j];
+          if (!key) break;
+          if (!current[key]) current[key] = {};
+          current = current[key];
+        }
+      }
+      return tree;
     }
 
-    // 依存関係に応じて選択肢を動的に更新
-    document.getElementById("typeSelect").addEventListener("change", function () {
-      const type = this.value;
-      const cate1Options = type && optionsTree[type] ? Object.keys(optionsTree[type]) : [];
-      populateSelect("cate1Select", cate1Options);
-      populateSelect("cate2Select", []);
-      populateSelect("cate3Select", []);
+
+  function populateSelect(selectId, options) {
+    const select = document.getElementById(selectId);
+    select.innerHTML = '<option value="">--選んでください--</option>';
+    options.forEach(value => {
+      const opt = document.createElement("option");
+      opt.value = value;
+      opt.textContent = value;
+      select.appendChild(opt);
     });
+  }
 
-    document.getElementById("cate1Select").addEventListener("change", function () {
-      const type = document.getElementById("typeSelect").value;
-      const cate1 = this.value;
-      const cate2Options =
-        type && cate1 && optionsTree[type] && optionsTree[type][cate1]
-          ? Object.keys(optionsTree[type][cate1])
-          : [];
-      populateSelect("cate2Select", cate2Options);
-      populateSelect("cate3Select", []);
-    });
+  document.getElementById("typeSelect").addEventListener("change", function () {
+    const type = this.value;
+    const cate1Options = type && optionsTree[type] ? Object.keys(optionsTree[type]) : [];
+    populateSelect("cate1Select", cate1Options);
+    populateSelect("cate2Select", []);
+    populateSelect("cate3Select", []);
+  });
 
-    document.getElementById("cate2Select").addEventListener("change", function () {
-      const type = document.getElementById("typeSelect").value;
-      const cate1 = document.getElementById("cate1Select").value;
-      const cate2 = this.value;
-      const cate3Options =
-        type && cate1 && cate2 &&
-        optionsTree[type] && optionsTree[type][cate1] &&
-        optionsTree[type][cate1][cate2]
-          ? optionsTree[type][cate1][cate2]
-          : [];
-      populateSelect("cate3Select", cate3Options);
-    }); 
+  document.getElementById("cate1Select").addEventListener("change", function () {
+    const type = document.getElementById("typeSelect").value;
+    const cate1 = this.value;
+    const cate2Options =
+      type && cate1 && optionsTree[type] && optionsTree[type][cate1]
+        ? Object.keys(optionsTree[type][cate1])
+        : [];
+    populateSelect("cate2Select", cate2Options);
+    populateSelect("cate3Select", []);
+  });
 
-    //let optionsTree = {};
+  document.getElementById("cate2Select").addEventListener("change", function () {
+    const type = document.getElementById("typeSelect").value;
+    const cate1 = document.getElementById("cate1Select").value;
+    const cate2 = this.value;
+    const cate3Options =
+      type && cate1 && cate2 &&
+      optionsTree[type] && optionsTree[type][cate1] &&
+      optionsTree[type][cate1][cate2]
+        ? Object.keys(optionsTree[type][cate1][cate2])
+        : [];
+    populateSelect("cate3Select", cate3Options);
+  });
 
-    // fetch(OPTIONS_URL)
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     populateSelect("typeSelect", data.type);
-    //     populateSelect("cate1Select", data.cate1);
-    //     populateSelect("cate2Select", data.cate2);
-    //     populateSelect("cate3Select", data.cate3);
-    //   })
-    //   .catch(error => {
-    //     console.error("選択肢の読み込みに失敗しました:", error);
-    //   });
+  document.getElementById("logForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
 
-    // function populateSelect(selectId, options) {
-    //   const select = document.getElementById(selectId);
-    //   options.forEach(value => {
-    //     const opt = document.createElement("option");
-    //     opt.value = value;
-    //     opt.textContent = value;
-    //     select.appendChild(opt);
-    //   });
-    // }
-
-
-    document.getElementById("logForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-
-      fetch("https://script.google.com/macros/s/AKfycbwddQbwMSW1TeLl-2VSLXXhV84m0YhpP0mAmKusGiVgx4qTW3xMDVl-a84y4lW754ud/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbzks7f18-ujet_dDCb-VIrOS7tVcBarFiqvkqK84ZYXjGqkqfBMhGqwNuQsCjqQrleb/exec", {
         method: "POST",
         body: new URLSearchParams(formData)
       }).then(response => {
@@ -141,7 +136,7 @@
           alert("送信完了！");
           e.target.reset();
 
-          // 送信後も日付と時間を再設定
+          // 日付と時間：送信後も日付と時間を再設定
           const now = new Date();
           document.getElementById("dateInput").value = now.toISOString().slice(0, 10);
           document.getElementById("timeInput").value = now.toTimeString().slice(0, 5);
